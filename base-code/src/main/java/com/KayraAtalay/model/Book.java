@@ -1,9 +1,9 @@
 package com.KayraAtalay.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,11 +30,17 @@ public class Book extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "author_id", nullable = false)
 	private Author author;
+	
+	@Column(precision = 3, scale = 1) 
+    private BigDecimal rating;
 
 	@Column(name = "publication_year", nullable = false)
 	private Integer publicationYear;
+	
+	@Column(name = "review_count")
+	private Integer reviewCount;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
 	private Set<Review> reviews = new HashSet<>();
 
 }

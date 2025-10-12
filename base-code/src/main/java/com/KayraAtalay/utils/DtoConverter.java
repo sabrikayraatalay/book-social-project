@@ -1,8 +1,15 @@
 package com.KayraAtalay.utils;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 
+import com.KayraAtalay.dto.DtoAuthor;
+import com.KayraAtalay.dto.DtoBookWithoutAuthor;
 import com.KayraAtalay.dto.DtoUser;
+import com.KayraAtalay.model.Author;
+import com.KayraAtalay.model.Book;
 import com.KayraAtalay.model.User;
 
 public class DtoConverter {
@@ -13,7 +20,31 @@ public class DtoConverter {
 		BeanUtils.copyProperties(user, dtoUser);
 
 		return dtoUser;
-
 	}
-	
+
+	public static DtoAuthor toDto(Author author) {
+		DtoAuthor dto = new DtoAuthor();
+		dto.setId(author.getId());
+		dto.setName(author.getName());
+
+		Set<Book> books = author.getBooks();
+		if (books == null || books.isEmpty()) {
+			return dto;
+		}
+
+		// Book to DtoBookWithoutAuthor
+		Set<DtoBookWithoutAuthor> dtoBooks = author.getBooks().
+			stream().map(book -> {
+			DtoBookWithoutAuthor bookDto = new DtoBookWithoutAuthor();
+			bookDto.setId(book.getId());
+			bookDto.setTitle(book.getTitle());
+			bookDto.setPublicationYear(book.getPublicationYear());
+			bookDto.setRating(book.getRating());
+			return bookDto;
+		}).collect(Collectors.toSet());
+
+		dto.setBooks(dtoBooks);
+
+		return dto;
+	}
 }

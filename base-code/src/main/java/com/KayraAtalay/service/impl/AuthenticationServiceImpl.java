@@ -15,6 +15,7 @@ import com.KayraAtalay.dto.AuthRequest;
 import com.KayraAtalay.dto.AuthResponse;
 import com.KayraAtalay.dto.DtoUser;
 import com.KayraAtalay.dto.RefreshTokenRequest;
+import com.KayraAtalay.enums.UserRole;
 import com.KayraAtalay.exception.BaseException;
 import com.KayraAtalay.exception.ErrorMessage;
 import com.KayraAtalay.exception.MessageType;
@@ -54,6 +55,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 		user.setCreateTime(new Date());
 		user.setUsername(request.getUsername());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		user.setRole(UserRole.USER);
 		
 		return user;
 	}
