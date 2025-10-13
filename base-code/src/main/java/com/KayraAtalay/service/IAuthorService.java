@@ -18,7 +18,7 @@ public interface IAuthorService {
     public void deleteAuthor(Long authorId);
 
     // ADMIN and USER
-    public  Page<DtoAuthor> getAllAuthors(Pageable pageable);
+    public  Page<DtoAuthor> findAllPageable(Pageable pageable);
     
     public DtoAuthor findAuthorById(Long authorId);
     

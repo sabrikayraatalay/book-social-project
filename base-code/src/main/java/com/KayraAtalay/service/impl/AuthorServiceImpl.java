@@ -89,7 +89,7 @@ public class AuthorServiceImpl implements IAuthorService {
 	}
 
 	@Override
-	public Page<DtoAuthor> getAllAuthors(Pageable pageable) {
+	public Page<DtoAuthor> findAllPageable(Pageable pageable) {
 		Page<Author> page = authorRepository.findAll(pageable);
 
 		return page.map(DtoConverter::toDto);

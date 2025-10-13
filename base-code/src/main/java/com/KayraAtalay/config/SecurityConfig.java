@@ -16,7 +16,7 @@ import com.KayraAtalay.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
 	public static final String REGISTER= "/register";

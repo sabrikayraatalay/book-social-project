@@ -26,6 +26,7 @@ public class DtoConverter {
 		DtoAuthor dto = new DtoAuthor();
 		dto.setId(author.getId());
 		dto.setName(author.getName());
+		dto.setCreateTime(author.getCreateTime());
 
 		Set<Book> books = author.getBooks();
 		if (books == null || books.isEmpty()) {
