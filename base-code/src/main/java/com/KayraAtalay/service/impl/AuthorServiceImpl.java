@@ -109,7 +109,7 @@ public class AuthorServiceImpl implements IAuthorService {
 	@Override
 	public List<DtoAuthor> searchAuthorsByName(String name) {
 
-		List<Author> authorListByName = authorRepository.findByNameContainingIgnoreCase(name);
+		List<Author> authorListByName = authorRepository.findByNameStartingWithIgnoreCase(name);
 
 		return authorListByName.stream().map(DtoConverter::toDto).collect(Collectors.toList());
 	}

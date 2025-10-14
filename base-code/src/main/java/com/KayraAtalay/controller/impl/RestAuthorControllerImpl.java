@@ -40,7 +40,7 @@ public class RestAuthorControllerImpl extends RestBaseController implements IRes
 		return ok(authorService.saveAuthor(authorRequest));
 	}
 
-	@PutMapping("/admin/update/{authorId}")
+	@PutMapping("/admin/update/{authorId}") 
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@Override
 	public RootEntity<DtoAuthor> updateAuthor(@PathVariable Long authorId,

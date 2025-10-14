@@ -7,10 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import com.KayraAtalay.model.Author;
 
-
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-	
-	List<Author> findByNameContainingIgnoreCase(String name);
+
+	List<Author> findByNameStartingWithIgnoreCase(String name);
 
 }

@@ -21,13 +21,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Author extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String country;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Integer birthYear;
 
     @OneToMany(mappedBy = "author",fetch = FetchType.LAZY)

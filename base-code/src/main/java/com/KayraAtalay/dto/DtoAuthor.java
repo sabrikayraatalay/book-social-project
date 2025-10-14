@@ -16,6 +16,10 @@ public class DtoAuthor extends DtoBase {
 	
 	private String name;
 	
+	private Integer birthYear;
+	
+	private String country;
+	
 	private Set<DtoBookWithoutAuthor> books = new HashSet<>();
 
 }
