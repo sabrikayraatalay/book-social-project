@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 
 import com.KayraAtalay.dto.DtoAuthor;
+import com.KayraAtalay.dto.DtoBook;
 import com.KayraAtalay.dto.DtoBookWithoutAuthor;
 import com.KayraAtalay.dto.DtoUser;
 import com.KayraAtalay.model.Author;
@@ -50,4 +51,32 @@ public class DtoConverter {
 
 		return dto;
 	}
+	
+	
+	public static DtoBook toDto(Book book) {
+		DtoBook dtoBook = new DtoBook();
+		Author author = book.getAuthor();
+		dtoBook.setId(book.getId());
+		dtoBook.setCreateTime(book.getCreateTime());
+		dtoBook.setAuthorName(author.getName());
+		dtoBook.setPublicationYear(book.getPublicationYear());
+		dtoBook.setRating(book.getRating());
+		dtoBook.setReviewCount(book.getReviewCount());
+		dtoBook.setTitle(book.getTitle());
+		
+		return dtoBook;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

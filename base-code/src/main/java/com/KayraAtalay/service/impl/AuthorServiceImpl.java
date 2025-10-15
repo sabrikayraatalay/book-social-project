@@ -89,6 +89,7 @@ public class AuthorServiceImpl implements IAuthorService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Page<DtoAuthor> findAllPageable(Pageable pageable) {
 		Page<Author> page = authorRepository.findAll(pageable);
 
@@ -96,6 +97,7 @@ public class AuthorServiceImpl implements IAuthorService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public DtoAuthor findAuthorById(Long authorId) {
 		Optional<Author> optAuthor = authorRepository.findById(authorId);
 
@@ -107,6 +109,7 @@ public class AuthorServiceImpl implements IAuthorService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<DtoAuthor> searchAuthorsByName(String name) {
 
 		List<Author> authorListByName = authorRepository.findByNameStartingWithIgnoreCase(name);

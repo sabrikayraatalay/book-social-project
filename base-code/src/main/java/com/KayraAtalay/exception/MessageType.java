@@ -14,7 +14,8 @@ public enum MessageType {
 	REFRESH_TOKEN_EXPIRED("1011", "This refresh token is expired"),
 	AUTHOR_ALREADY_EXISTS("1012", "This author is already exists"),
 	AUTHOR_NOT_FOUND("1013", "Could not find the author"),
-	INVALID_OPERATION("1014", "Invalid operation");
+	BOOK_NOT_FOUND("1014", "Could not find the book"),
+	INVALID_OPERATION("1015", "Invalid operation");
 
 	private String code;
 
