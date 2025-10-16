@@ -27,7 +27,7 @@ import com.KayraAtalay.utils.RestPageableEntity;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/rest/api/author")
+@RequestMapping("/rest/api/book-social/author")
 public class RestAuthorControllerImpl extends RestBaseController implements IRestAuthorController {
 
 	@Autowired

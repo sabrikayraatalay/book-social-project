@@ -11,8 +11,10 @@ import com.KayraAtalay.model.Book;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>{
 	
-	List<Book> findByTitleStartingWithIgnoreCase(String title);
+	List<Book> findByTitleContainingIgnoreCase(String title);
 	
 	Set<Book> findByAuthorId(Long authorId);
+	
+	boolean existsByGoogleBooksId(String googleBooksId);
 
 }

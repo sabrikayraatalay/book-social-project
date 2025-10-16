@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 import com.KayraAtalay.exception.BaseException;
 import com.KayraAtalay.exception.ErrorMessage;
@@ -21,43 +22,47 @@ import com.KayraAtalay.repository.UserRepository;
 
 @Configuration
 public class AppConfig {
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	@Bean
+	public RestTemplate restTemplate() {
+
+		return new RestTemplate();
+	}
+
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new UserDetailsService() {
-			
+
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 				Optional<User> optional = userRepository.findByUsername(username);
-				
+
 				if (optional.isEmpty()) {
 					throw new BaseException(new ErrorMessage(MessageType.USERNAME_NOT_FOUND, " : " + username));
 				}
-				 return optional.get();
+				return optional.get();
 			}
 		};
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	@Bean 
+	@Bean
 	public DaoAuthenticationProvider daoAuthenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(userDetailsService());
 		provider.setPasswordEncoder(passwordEncoder());
-		
+
 		return provider;
 	}
-	
-	
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 	}
-	
-	
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

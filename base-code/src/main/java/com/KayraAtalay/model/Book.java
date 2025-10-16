@@ -23,6 +23,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book extends BaseEntity {
+	
+	@Column(unique = true, name = "google_books_id") 
+    private String googleBooksId;
 
 	@Column(name = "title", nullable = false)
 	private String title;

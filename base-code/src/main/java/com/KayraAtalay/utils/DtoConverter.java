@@ -63,6 +63,7 @@ public class DtoConverter {
 		dtoBook.setRating(book.getRating());
 		dtoBook.setReviewCount(book.getReviewCount());
 		dtoBook.setTitle(book.getTitle());
+		dtoBook.setGoogleBooksId(book.getGoogleBooksId());
 		
 		return dtoBook;
 		
