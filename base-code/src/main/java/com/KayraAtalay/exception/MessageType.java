@@ -15,7 +15,8 @@ public enum MessageType {
 	AUTHOR_ALREADY_EXISTS("1012", "This author is already exists"),
 	AUTHOR_NOT_FOUND("1013", "Could not find the author"),
 	BOOK_NOT_FOUND("1014", "Could not find the book"),
-	INVALID_OPERATION("1015", "Invalid operation");
+	REVIEW_NOT_FOUND("1015", "Could not find the review"),
+	INVALID_OPERATION("1016", "Invalid operation");
 
 	private String code;
 

@@ -1,7 +1,5 @@
 package com.KayraAtalay.model;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,7 +23,7 @@ public class Review extends BaseEntity {
 	private String content;
 	
 	@Column(name = "rating")
-	private BigDecimal rating;
+	private Integer rating;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id" ,nullable = false)

@@ -8,9 +8,11 @@ import org.springframework.beans.BeanUtils;
 import com.KayraAtalay.dto.DtoAuthor;
 import com.KayraAtalay.dto.DtoBook;
 import com.KayraAtalay.dto.DtoBookWithoutAuthor;
+import com.KayraAtalay.dto.DtoReview;
 import com.KayraAtalay.dto.DtoUser;
 import com.KayraAtalay.model.Author;
 import com.KayraAtalay.model.Book;
+import com.KayraAtalay.model.Review;
 import com.KayraAtalay.model.User;
 
 public class DtoConverter {
@@ -37,8 +39,7 @@ public class DtoConverter {
 		}
 
 		// Book to DtoBookWithoutAuthor
-		Set<DtoBookWithoutAuthor> dtoBooks = author.getBooks().
-			stream().map(book -> {
+		Set<DtoBookWithoutAuthor> dtoBooks = author.getBooks().stream().map(book -> {
 			DtoBookWithoutAuthor bookDto = new DtoBookWithoutAuthor();
 			bookDto.setId(book.getId());
 			bookDto.setTitle(book.getTitle());
@@ -51,8 +52,7 @@ public class DtoConverter {
 
 		return dto;
 	}
-	
-	
+
 	public static DtoBook toDto(Book book) {
 		DtoBook dtoBook = new DtoBook();
 		Author author = book.getAuthor();
@@ -64,20 +64,25 @@ public class DtoConverter {
 		dtoBook.setReviewCount(book.getReviewCount());
 		dtoBook.setTitle(book.getTitle());
 		dtoBook.setGoogleBooksId(book.getGoogleBooksId());
-		
+
 		return dtoBook;
-		
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	public static DtoReview toDto(Review review) {
+		DtoReview dtoReview = new DtoReview();
+		Book book = review.getBook();
+		User user = review.getUser();
+		dtoReview.setId(review.getId());
+		dtoReview.setCreateTime(review.getCreateTime());
+		dtoReview.setBookId(book.getId());
+		dtoReview.setBookTitle(book.getTitle());
+		dtoReview.setRating(review.getRating());
+		dtoReview.setContent(review.getContent());
+		dtoReview.setUsername(user.getUsername());
+
+		return dtoReview;
+
+	}
+
 }

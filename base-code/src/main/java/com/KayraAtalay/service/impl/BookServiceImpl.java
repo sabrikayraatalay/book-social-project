@@ -13,6 +13,7 @@ import com.KayraAtalay.model.Author;
 import com.KayraAtalay.model.Book;
 import com.KayraAtalay.repository.AuthorRepository;
 import com.KayraAtalay.repository.BookRepository;
+import com.KayraAtalay.repository.ReviewRepository;
 import com.KayraAtalay.service.IBookService;
 import com.KayraAtalay.utils.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired; 
@@ -37,12 +38,26 @@ public class BookServiceImpl implements IBookService {
 
     @Autowired
     private GoogleBooksServiceImpl googleBooksService;
+    
+    @Autowired
+    private ReviewRepository reviewRepository;
+    
+    @Transactional
+	public void updateBookRating(Long bookId) {
+		Book book = bookRepository.findById(bookId)
+				.orElseThrow(() -> new BaseException(new ErrorMessage(MessageType.BOOK_NOT_FOUND, bookId.toString())));
 
-    /**
-     * Saves a new book to the database using data from the Google Books API.
-     * @param request DTO containing the unique Google Books ID.
-     * @return The DTO of the newly saved book.
-     */
+		BigDecimal averageRating = reviewRepository.findAverageRatingByBookId(bookId);
+
+		Long reviewCount = reviewRepository.countByBookId(bookId);
+
+		book.setRating(averageRating == null ? BigDecimal.ZERO : averageRating);
+		book.setReviewCount(reviewCount.intValue());
+
+		bookRepository.save(book);
+	}
+
+
     @Override
     @Transactional
     public DtoBook saveBookFromGoogleApi(AddBookFromGoogleRequest request) {
