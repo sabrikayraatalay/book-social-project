@@ -35,7 +35,8 @@ public class GoogleBooksServiceImpl {
      * @param query The text entered by the admin (e.g., "Stephen King" or "The Lord of the Rings").
      * @return A list of found book items.
      */
-    public List<GoogleBookItem> searchBooks(String query) {
+    @SuppressWarnings("deprecation")
+	public List<GoogleBookItem> searchBooks(String query) {
 
         // --- 4. SECURE URL CONSTRUCTION ---
         // We use UriComponentsBuilder to safely construct the URL, which handles special characters automatically.
@@ -65,7 +66,8 @@ public class GoogleBooksServiceImpl {
      * @param googleBookId The Google ID of the book selected by the admin (e.g., "XYZ123ABC").
      * @return A single book item object.
      */
-    public GoogleBookItem findBookById(String googleBookId) {
+    @SuppressWarnings("deprecation")
+	public GoogleBookItem findBookById(String googleBookId) {
 
         // Construct the URL specifically for fetching a single volume by its ID.
         String url = UriComponentsBuilder.fromHttpUrl(GOOGLE_BOOKS_API_URL)
