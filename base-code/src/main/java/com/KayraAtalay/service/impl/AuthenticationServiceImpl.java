@@ -76,7 +76,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 		Optional<User> optional = userRepository.findByUsername(request.getUsername());	
 		
 		if (optional.isPresent()) {
-			throw new BaseException(new ErrorMessage(MessageType.USERNAME_ALREADY_EXISTS, " : " + request.getUsername()));
+			throw new BaseException(new ErrorMessage(MessageType.USERNAME_ALREADY_EXISTS, request.getUsername()));
 		}
 		
 		User savedUser = userRepository.save(createUser(request));
