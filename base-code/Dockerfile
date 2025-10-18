@@ -1,35 +1,34 @@
 # --- Stage 1: Build the application using Maven ---
-# Specify the platform for the build stage
+# Dockerfile'ı kök dizinde çalıştırıyoruz.
 FROM --platform=linux/amd64 maven:3.9-eclipse-temurin-17 AS build
 
-# Set the working directory inside the container
+# Docker konteynerinin içindeki çalışma dizini
 WORKDIR /app
 
-# Copy the Maven project file first to leverage Docker layer caching for dependencies
+# Kök pom.xml dosyasını kopyala (Gerekli olmasa da güvenlik için tutuyoruz)
 COPY pom.xml .
 
-# Download project dependencies (only if pom.xml changes)
-RUN mvn dependency:go-offline
+# Uygulama pom.xml dosyasını kopyala
+COPY base-code/pom.xml base-code/
 
-# Copy the rest of the application source code
-COPY src ./src
+# Uygulamanın kaynak kodunu kopyala
+COPY base-code/src base-code/src
 
-# Build the application, creating the executable JAR file. Skip tests during build.
+# Uygulamayı derle, testleri atla. Maven, base-code/pom.xml'i bulur ve derler.
 RUN mvn clean package -DskipTests
 
 
 # --- Stage 2: Create the final lightweight application image ---
-# Specify the platform for the final stage
 FROM --platform=linux/amd64 eclipse-temurin:17-jre-alpine
 
-# Set the working directory inside the container
+# Docker konteynerinin içindeki çalışma dizini
 WORKDIR /app
 
-# Copy the executable JAR file created in the 'build' stage
-COPY --from=build /app/target/*.jar app.jar
+# JAR dosyasını 'build' aşamasından kopyala
+COPY --from=build /app/base-code/target/*.jar app.jar
 
-# Expose the port the application runs on (default for Spring Boot is 8080)
+# Uygulamanın çalışacağı port
 EXPOSE 8080
 
-# Define the command to run the application when the container starts
+# Uygulamayı başlatma komutu
 ENTRYPOINT ["java", "-jar", "app.jar"]
