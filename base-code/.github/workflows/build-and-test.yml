@@ -22,5 +22,5 @@ jobs:
           cache: 'maven'
 
       - name: Build and Test with Maven
-       
+        # -f base-code/pom.xml komutuyla Maven'a pom.xml'in nerede olduğunu söylüyoruz.
         run: mvn clean install -f base-code/pom.xml
