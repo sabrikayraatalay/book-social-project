@@ -1,56 +1,50 @@
-# Use version 3.8 of the Docker Compose file format.
-version: '3.8'
-
 # Define the services (containers) that make up our application.
 services:
 
-  # Service 1: Our Spring Boot Application
-  app:
-    container_name: book-social-app
-    # Build the Docker image for this service using the Dockerfile in the current folder ('.').
-    build: .
-    # Map port 8080 on our computer to port 8080 inside the container.
-    ports:
-      - "8080:8080"
-    # Set environment variables for the application running inside the container.
-    # These will override settings in application.properties.
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/book_social_db # Use the service name 'db' as the hostname, not 'localhost'.
-      - SPRING_DATASOURCE_USERNAME=kayra # Database username (must match the 'db' service below).
-      - SPRING_DATASOURCE_PASSWORD=wqwq2121 # Database password (must match the 'db' service below).
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # Tell Hibernate to only validate the schema, not change it.
-      - SPRING_FLYWAY_SCHEMAS=book_social # Tell Flyway which schema to manage.
-    # Tell Docker that this 'app' service depends on the 'db' service.
-    # This makes sure the database starts before our application starts.
-    depends_on:
-      - db
-
-  # Service 2: Our PostgreSQL Database
+  # Service 1: The PostgreSQL Database
   db:
-    container_name: book-social-db
-    # Use the official 'postgres' version 14 image from Docker Hub (alpine is a smaller version).
     image: postgres:14-alpine
-    # Set environment variables for the PostgreSQL container.
-    # These are used only when the database is created for the first time.
-    environment:
-      - POSTGRES_USER=kayra
-      - POSTGRES_PASSWORD=wqwq2121 # The password now matches the one in the 'app' service.
-      - POSTGRES_DB=book_social_db
-      - PGDATA=/var/lib/postgresql/data/pgdata # The data directory inside the container.
-    # Use a volume to store the database data, so it's not lost when the container stops.
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/pgdata
-    # (Optional) Map port 5433 on our computer to port 5432 in the container.
-    # This allows you to connect to the database from DBeaver using localhost:5433.
+    container_name: book-social-db
     ports:
+      # Map port 5433 on your computer to port 5432 inside the container.
       - "5433:5432"
-    # Check if the database is ready to accept connections before marking it as 'healthy'.
+    volumes:
+      # This makes sure our database data is saved permanently, even if the container is removed.
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    environment:
+      - POSTGRES_DB=book_social_db
+      - POSTGRES_USER=kayra
+      - POSTGRES_PASSWORD=wqwq2121
+      - PGDATA=/var/lib/postgresql/data/pgdata # Specifies the data directory.
     healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U kayra -d book_social_db"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
+      # Checks if the database is truly ready to accept connections.
+      test: ["CMD-SHELL", "pg_isready -U kayra -d book_social_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-# Define the named volume that we used in the 'db' service.
+  # Service 2: Our Spring Boot Application
+  app:
+    # Build the image using the Dockerfile in the current directory ('.').
+    build: .
+    container_name: book-social-app
+    # Make sure the 'app' service waits for the 'db' service to be healthy before starting.
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Map port 8080 on your computer to port 8080 inside the container.
+      - "8080:8080"
+    environment:
+      # --- CRITICAL SECTION ---
+      # These variables override application.properties when running in Docker.
+      # We tell Spring to connect to the 'db' service, not 'localhost'.
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/book_social_db
+      - SPRING_DATASOURCE_USERNAME=kayra
+      - SPRING_DATASOURCE_PASSWORD=wqwq2121
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # Stay in safe 'validate' mode.
+      - SPRING_FLYWAY_SCHEMAS=book_social
+
+# Define the named volume we used in the 'db' service for persistent data.
 volumes:
   postgres_data:

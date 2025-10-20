@@ -1,32 +1,31 @@
 # --- Stage 1: Build the application using Maven ---
-# Build aşaması için platformu belirtiyoruz (Mac M serisi için önemli)
+# Specify platform for Apple Silicon (M1/M2) compatibility.
 FROM --platform=linux/amd64 maven:3.9-eclipse-temurin-17 AS build
 
-# Docker konteynerinin içindeki çalışma dizini
 WORKDIR /app
 
-# Dockerfile, base-code klasöründe olduğu için sadece pom.xml kopyalanır
+# Copy only the pom.xml first to leverage Docker's layer caching for dependencies.
 COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Uygulamanın kaynak kodunu kopyala (base-code/src yerine sadece src kullanılır)
+# Copy the rest of the source code.
 COPY src ./src
 
-# Uygulamayı derle, testleri atla.
+# Compile the application and skip tests (tests will be run in CI, not here).
 RUN mvn clean package -DskipTests
 
 
 # --- Stage 2: Create the final lightweight application image ---
-# Final imaj için JRE kullanıyoruz
+# Specify platform for Apple Silicon (M1/M2) compatibility.
 FROM --platform=linux/amd64 eclipse-temurin:17-jre-alpine
 
-# Docker konteynerinin içindeki çalışma dizini
 WORKDIR /app
 
-# JAR dosyasını 'build' aşamasından kopyala (target klasörünü direkt kullanır)
+# Copy the final .jar file from the 'build' stage.
 COPY --from=build /app/target/*.jar app.jar
 
-# Uygulamanın çalışacağı port
+# Expose the port the application will run on.
 EXPOSE 8080
 
-# Uygulamayı başlatma komutu
+# The command to run the application when the container starts.
 ENTRYPOINT ["java", "-jar", "app.jar"]
