@@ -28,7 +28,7 @@ jobs:
         ports:
           # Robotun 5432 portunu, konteynerin 5432 portuna bağla
           - 5432:5432
-        # Bu veritabanı için ortam değişkenleri (username, password, db adı)
+        # Bu test veritabanı için ortam değişkenleri (username, password, db adı)
         env:
           POSTGRES_DB: book_social_test_db
           POSTGRES_USER: testuser
@@ -50,7 +50,7 @@ jobs:
         # YENİ BÖLÜM: Ortam Değişkenleri (env)
         # =================================================================
         # Maven komutuna, application.properties'teki ayarları ezmesi için 
-        # bu yeni veritabanı bilgilerini veriyoruz.
+        # bu yeni test veritabanı bilgilerini veriyoruz.
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/book_social_test_db
           SPRING_DATASOURCE_USERNAME: testuser
