@@ -42,7 +42,10 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().
 				cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.authorizeHttpRequests(request -> request.requestMatchers(REGISTER, AUTHENTICATE, REFRESH_TOKEN)
+				.authorizeHttpRequests(request -> request.requestMatchers(REGISTER, AUTHENTICATE, REFRESH_TOKEN,"/rest/api/book-social/book/list/pageable",
+				        "/rest/api/book-social/book/find-by-title",
+				        "/rest/api/book-social/book/{bookId}",
+				        "/rest/api/book-social/author/find-by-name")
 						.permitAll().anyRequest().authenticated())
 				.exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
