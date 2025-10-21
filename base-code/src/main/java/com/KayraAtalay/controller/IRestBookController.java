@@ -3,6 +3,8 @@ package com.KayraAtalay.controller;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Pageable;
+
 import com.KayraAtalay.dto.BookUpdateRequest;
 import com.KayraAtalay.dto.DtoBook;
 import com.KayraAtalay.dto.DtoBookIU;
@@ -17,7 +19,7 @@ public interface IRestBookController {
 	    public void deleteBook(Long bookId);
 
 	    // ADMIN and USER
-	    public RootEntity<RestPageableEntity<DtoBook>> findAllPageable(PageableRequest pageable);
+	    public RootEntity<RestPageableEntity<DtoBook>> findAllPageable(Pageable pageable);
 	    public RootEntity<DtoBook> findBookById(Long bookId);
 	    public RootEntity<List<DtoBook>> searchBooksByTitle(String title);
 	    public RootEntity<Set<DtoBook>> findBooksByAuthorId(Long authorId);
