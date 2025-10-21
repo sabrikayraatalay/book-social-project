@@ -10,25 +10,17 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # =================================================================
-    # YENİ BÖLÜM: Servis Konteynerleri
-    # =================================================================
-    # Bu 'job' için arka planda ek konteynerler başlatır.
+    # Testler için bir PostgreSQL veritabanı servisi başlat
     services:
-      # 'postgres' adında bir servis başlat
       postgres:
-        # Docker Hub'dan bu imajı kullan
         image: postgres:14-alpine
-        # Konteynerin içindeki PostgreSQL'in hazır olduğundan emin ol
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
-          # Robotun 5432 portunu, konteynerin 5432 portuna bağla
           - 5432:5432
-        # Bu test veritabanı için ortam değişkenleri (username, password, db adı)
         env:
           POSTGRES_DB: book_social_test_db
           POSTGRES_USER: testuser
@@ -46,19 +38,15 @@ jobs:
           cache: 'maven'
 
       - name: Build and Test with Maven
-        # =================================================================
-        # YENİ BÖLÜM: Ortam Değişkenleri (env)
-        # =================================================================
-        # Maven komutuna, application.properties'teki ayarları ezmesi için 
-        # bu yeni test veritabanı bilgilerini veriyoruz.
+        # Testlere, az önce başlattığımız 'postgres' servisine ait
+        # veritabanı bilgilerini veriyoruz.
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/book_social_test_db
           SPRING_DATASOURCE_USERNAME: testuser
           SPRING_DATASOURCE_PASSWORD: testpassword
-          # Test sırasında Flyway'in çalışmasını ve şemayı oluşturmasını sağlıyoruz
-          SPRING_JPA_HIBERNATE_DDL_AUTO: none 
+          SPRING_JPA_HIBERNATE_DDL_AUTO: none
           SPRING_FLYWAY_SCHEMAS: book_social
           SPRING_FLYWAY_LOCATIONS: classpath:db/migration
-        
-        # -f base-code/pom.xml komutuyla Maven'a pom.xml'in nerede olduğunu söylüyoruz.
+
+        # pom.xml'in yerini -f ile belirtiyoruz
         run: mvn clean install -f base-code/pom.xml
