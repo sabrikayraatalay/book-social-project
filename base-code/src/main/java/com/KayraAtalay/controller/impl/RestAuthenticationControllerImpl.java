@@ -3,6 +3,7 @@ package com.KayraAtalay.controller.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.KayraAtalay.controller.IRestAuthenticationController;
@@ -17,6 +18,7 @@ import com.KayraAtalay.service.IAuthenticationService;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/rest/api/book-social")
 public class RestAuthenticationControllerImpl extends RestBaseController implements IRestAuthenticationController {
 
 	@Autowired

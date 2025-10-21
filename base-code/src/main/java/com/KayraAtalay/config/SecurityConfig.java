@@ -19,9 +19,9 @@ import com.KayraAtalay.jwt.JwtAuthenticationFilter;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
-	public static final String REGISTER= "/register";
-	public static final String AUTHENTICATE = "/authenticate";
-	public static final String REFRESH_TOKEN = "/refreshToken";
+	public static final String REGISTER= "/rest/api/book-social/register";
+	public static final String AUTHENTICATE = "/rest/api/book-social/authenticate";
+	public static final String REFRESH_TOKEN = "/rest/api/book-social/refreshToken";
 	
 	@Autowired
 	private AuthenticationProvider authenticationProvider;
