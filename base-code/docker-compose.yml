@@ -18,22 +18,13 @@ services:
       timeout: 5s
       retries: 5
 
-  # Servis 2: Redis Önbellek Sunucusu
-  redis:
-    image: redis:7-alpine
-    container_name: book-social-redis
-    ports:
-      - "6379:6379"
-
-  # Servis 3: Bizim Spring Boot Uygulamamız
+  # Servis 2: Bizim Spring Boot Uygulamamız (Redis'siz)
   app:
     build: .
     container_name: book-social-app
     depends_on: 
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
     ports:
       - "8080:8080"
     environment:
@@ -41,15 +32,10 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/book_social_db
       - SPRING_DATASOURCE_USERNAME=kayra
       - SPRING_DATASOURCE_PASSWORD=wqwq2121
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # <-- BU BİLİNÇLİ OLARAK 'create' (Geçici)
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # GÜVENLİ MOD
       - SPRING_FLYWAY_SCHEMAS=book_social
-      
-      # --- Redis Ayarları ---
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
-      - SPRING_CACHE_TYPE=redis
-      
-     
+      - SPRING_FLYWAY_LOCATIONS=classpath:db/migration
+      # (Flyway'i artık AÇIK bırakıyoruz, 'enabled=false' yok)
 
 volumes:
   postgres_data:

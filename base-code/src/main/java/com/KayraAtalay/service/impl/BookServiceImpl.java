@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -98,10 +97,7 @@ public class BookServiceImpl implements IBookService {
 
 	@Override
 	@Transactional(readOnly = true)
-	@Cacheable(value = "books", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
 	public Page<DtoBook> findAllPageable(Pageable pageable) {
-
-		System.out.println(">>> VERİTABANINDAN ÇEKİLİYOR! (Cache'lenmemiş)");
 
 		return bookRepository.findAll(pageable).map(DtoConverter::toDto);
 	}

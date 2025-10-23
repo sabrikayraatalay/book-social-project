@@ -14,7 +14,5 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 	List<Book> findByTitleContainingIgnoreCase(String title);
 	
 	Set<Book> findByAuthorId(Long authorId);
-	
-	boolean existsByGoogleBooksId(String googleBooksId);
 
 }

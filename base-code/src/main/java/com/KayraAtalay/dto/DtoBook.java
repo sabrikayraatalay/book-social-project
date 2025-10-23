@@ -12,8 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DtoBook extends DtoBase {
-	
-	private String googleBooksId;
 
 	private String title;
 
