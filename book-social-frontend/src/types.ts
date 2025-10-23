@@ -8,3 +8,9 @@ export interface DtoBook {
   reviewCount: number | null;
   googleBooksId: string | null;
 }
+
+// Backend'deki AuthResponse DTO'sunun karşılığı
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+}
