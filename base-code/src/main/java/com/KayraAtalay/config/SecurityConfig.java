@@ -14,11 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.KayraAtalay.handler.AuthEntryPoint;
 import com.KayraAtalay.jwt.JwtAuthenticationFilter;
 
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -40,38 +35,14 @@ public class SecurityConfig {
 	@SuppressWarnings("removal")
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().
-				cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.authorizeHttpRequests(request -> request.requestMatchers(REGISTER, AUTHENTICATE, REFRESH_TOKEN,"/rest/api/book-social/book/list/pageable",
-				        "/rest/api/book-social/book/find-by-title",
-				        "/rest/api/book-social/book/{bookId}",
-				        "/rest/api/book-social/author/find-by-name")
+		http.csrf().disable()
+				.authorizeHttpRequests(request -> request.requestMatchers(REGISTER, AUTHENTICATE, REFRESH_TOKEN)
 						.permitAll().anyRequest().authenticated())
 				.exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider)
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
-	}
-
-	// Bu Bean, Spring Security'e hangi adreslere izin vereceğimizi söyler
-	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-
-		// Sadece bizim React uygulamamızın çalıştığı adrese izin veriyoruz
-		configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-
-		// Hangi HTTP metotlarına (GET, POST vb.) izin verileceği
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-		// Hangi başlıklara (Header) izin verileceği (JWT için 'Authorization' şart)
-		configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration); // Bu ayarları tüm API yolları için geçerli yap
-
-		return source;
 	}
 
 }

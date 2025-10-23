@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import com.KayraAtalay.dto.BookUpdateRequest;
 import com.KayraAtalay.dto.DtoBook;
 import com.KayraAtalay.dto.DtoBookIU;
-import com.KayraAtalay.dto.googlebooks.AddBookFromGoogleRequest;
 
 public interface IBookService {
 	
@@ -17,7 +16,7 @@ public interface IBookService {
     public DtoBook saveBook(DtoBookIU bookRequest);
     public DtoBook updateBook(Long bookId, BookUpdateRequest bookUpdateRequest);
     public void deleteBook(Long bookId);
-    DtoBook saveBookFromGoogleApi(AddBookFromGoogleRequest request);
+   
 
     // ADMIN and USER
     public Page<DtoBook> findAllPageable(Pageable pageable);

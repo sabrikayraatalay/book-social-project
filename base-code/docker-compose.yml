@@ -1,50 +1,55 @@
-# Define the services (containers) that make up our application.
 services:
-
-  # Service 1: The PostgreSQL Database
+  # Servis 1: PostgreSQL Veritabanı
   db:
     image: postgres:14-alpine
     container_name: book-social-db
     ports:
-      # Map port 5433 on your computer to port 5432 inside the container.
       - "5433:5432"
     volumes:
-      # This makes sure our database data is saved permanently, even if the container is removed.
       - postgres_data:/var/lib/postgresql/data/pgdata
     environment:
       - POSTGRES_DB=book_social_db
       - POSTGRES_USER=kayra
       - POSTGRES_PASSWORD=wqwq2121
-      - PGDATA=/var/lib/postgresql/data/pgdata # Specifies the data directory.
+      - PGDATA=/var/lib/postgresql/data/pgdata
     healthcheck:
-      # Checks if the database is truly ready to accept connections.
       test: ["CMD-SHELL", "pg_isready -U kayra -d book_social_db"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Service 2: Our Spring Boot Application
+  # Servis 2: Redis Önbellek Sunucusu
+  redis:
+    image: redis:7-alpine
+    container_name: book-social-redis
+    ports:
+      - "6379:6379"
+
+  # Servis 3: Bizim Spring Boot Uygulamamız
   app:
-    # Build the image using the Dockerfile in the current directory ('.').
     build: .
     container_name: book-social-app
-    # Make sure the 'app' service waits for the 'db' service to be healthy before starting.
-    depends_on:
+    depends_on: 
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     ports:
-      # Map port 8080 on your computer to port 8080 inside the container.
       - "8080:8080"
     environment:
-      # --- CRITICAL SECTION ---
-      # These variables override application.properties when running in Docker.
-      # We tell Spring to connect to the 'db' service, not 'localhost'.
+      # --- Veritabanı Ayarları ---
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/book_social_db
       - SPRING_DATASOURCE_USERNAME=kayra
       - SPRING_DATASOURCE_PASSWORD=wqwq2121
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # Stay in safe 'validate' mode.
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate # <-- BU BİLİNÇLİ OLARAK 'create' (Geçici)
       - SPRING_FLYWAY_SCHEMAS=book_social
+      
+      # --- Redis Ayarları ---
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_CACHE_TYPE=redis
+      
+     
 
-# Define the named volume we used in the 'db' service for persistent data.
 volumes:
   postgres_data:

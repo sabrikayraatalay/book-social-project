@@ -1,13 +1,10 @@
 package com.KayraAtalay.controller.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +22,7 @@ import com.KayraAtalay.controller.RootEntity;
 import com.KayraAtalay.dto.BookUpdateRequest;
 import com.KayraAtalay.dto.DtoBook;
 import com.KayraAtalay.dto.DtoBookIU;
-import com.KayraAtalay.dto.googlebooks.AddBookFromGoogleRequest;
-import com.KayraAtalay.dto.googlebooks.GoogleBookItem;
-import com.KayraAtalay.dto.googlebooks.GoogleBookSearchResultDto;
 import com.KayraAtalay.service.IBookService;
-import com.KayraAtalay.service.impl.GoogleBooksServiceImpl;
 import com.KayraAtalay.utils.PageableRequest;
 import com.KayraAtalay.utils.RestPageableEntity;
 
@@ -41,35 +34,6 @@ public class RestBookControllerImpl extends RestBaseController implements IRestB
 
 	@Autowired
 	private IBookService bookService;
-	
-	@Autowired
-	private GoogleBooksServiceImpl googleBooksService;
-	
-	@GetMapping("/admin/search-external")
-    @PreAuthorize("hasAuthority('ADMIN')") 
-    public RootEntity<List<GoogleBookSearchResultDto>> searchExternalBooks(@RequestParam String query) {
-        
-        List<GoogleBookItem> googleResults = googleBooksService.searchBooks(query);
-        
-        // Google Data to Dto
-        List<GoogleBookSearchResultDto> response = googleResults.stream()
-            .map(item -> new GoogleBookSearchResultDto(
-                item.getId(),
-                item.getVolumeInfo().getTitle(),
-                item.getVolumeInfo().getAuthors() != null ? item.getVolumeInfo().getAuthors() : Collections.emptyList(),
-                item.getVolumeInfo().getImageLinks() != null ? item.getVolumeInfo().getImageLinks().getThumbnail() : null
-            ))
-            .collect(Collectors.toList());
-
-        return ok(response);
-    }
-	
-	@PostMapping("/admin/add-from-external")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public RootEntity<DtoBook> addBookFromExternalApi(@Valid @RequestBody AddBookFromGoogleRequest request) {
-        DtoBook savedBook = bookService.saveBookFromGoogleApi(request);
-        return ok(savedBook);
-    }
 
 	@PostMapping("/admin/save")
 	@Override
@@ -95,8 +59,8 @@ public class RestBookControllerImpl extends RestBaseController implements IRestB
 
 	@GetMapping("/list/pageable")
 	@Override
-	public RootEntity<RestPageableEntity<DtoBook>> findAllPageable(Pageable pageable) {
-		Page<DtoBook> page = bookService.findAllPageable(pageable);
+	public RootEntity<RestPageableEntity<DtoBook>> findAllPageable(PageableRequest pageable) {
+		Page<DtoBook> page = bookService.findAllPageable(toPageable(pageable));
 		return ok(toPageableResponse(page, page.getContent()));
 	}
 
